@@ -276,16 +276,16 @@ function MacLib:Window(Settings)
 	base.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	base.BorderSizePixel = 0
 	base.Position = UDim2.fromScale(0.5, 0.5)
-	base.Size = Settings.Size or Config.WindowSize
+	base.Size = Settings.Size or UDim2.fromOffset(868, 650)
 
 	local baseUIScale = Instance.new("UIScale")
 	baseUIScale.Name = "BaseUIScale"
-	baseUIScale.Scale = math.clamp(ScaleFactor, 0.8, 1.5)
+	baseUIScale.Scale = 1
 	baseUIScale.Parent = base
 
 	local baseUICorner = Instance.new("UICorner")
 	baseUICorner.Name = "BaseUICorner"
-	baseUICorner.CornerRadius = UDim.new(0, Config.CornerRadius)
+	baseUICorner.CornerRadius = UDim.new(0, 10)
 	baseUICorner.Parent = base
 
 	local baseUIStroke = Instance.new("UIStroke")
@@ -320,8 +320,8 @@ function MacLib:Window(Settings)
 	sidebar.BackgroundTransparency = 0.2
 	sidebar.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	sidebar.BorderSizePixel = 0
-	sidebar.Position = UDim2.fromOffset(12, 12)
-	sidebar.Size = UDim2.new(Config.SidebarWidth, -24, 1, -24)
+	sidebar.Position = UDim2.fromOffset(0, 0)
+	sidebar.Size = UDim2.fromScale(0.325, 1)
 	
 	local sidebarUICorner = Instance.new("UICorner")
 	sidebarUICorner.CornerRadius = UDim.new(0, 16)
@@ -865,8 +865,8 @@ function MacLib:Window(Settings)
 	content.BackgroundTransparency = 1
 	content.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	content.BorderSizePixel = 0
-	content.Position = UDim2.new(Config.SidebarWidth, 12, 0, 12)
-	content.Size = UDim2.new(1 - Config.SidebarWidth, -24, 1, -24)
+	content.Position = UDim2.fromScale(0.325, 0)
+	content.Size = UDim2.fromScale(0.675, 1)
 
 	local resizingContent = false
 	local defaultSidebarWidth = sidebar.AbsoluteSize.X
@@ -929,8 +929,8 @@ function MacLib:Window(Settings)
 	topbar.BackgroundTransparency = 0.2
 	topbar.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	topbar.BorderSizePixel = 0
-	topbar.Position = UDim2.fromOffset(12, 12)
-	topbar.Size = UDim2.new(1, -24, 0, Config.TopbarHeight)
+	topbar.Position = UDim2.fromOffset(0, 0)
+	topbar.Size = UDim2.new(1, 0, 0, 63)
 	
 	local topbarUICorner = Instance.new("UICorner")
 	topbarUICorner.CornerRadius = UDim.new(0, 14)
@@ -1108,14 +1108,6 @@ function MacLib:Window(Settings)
 	topbar.Parent = content
 
 	content.Parent = base
-	
-	-- Add content area styling
-	content.BackgroundColor3 = Color3.fromRGB(18, 22, 35)
-	content.BackgroundTransparency = 0.15
-	
-	local contentUICorner = Instance.new("UICorner")
-	contentUICorner.CornerRadius = UDim.new(0, 16)
-	contentUICorner.Parent = content
 
 	local globalSettings = Instance.new("Frame")
 	globalSettings.Name = "GlobalSettings"
