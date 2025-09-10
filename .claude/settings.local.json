@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:brady-xyz.gitbook.io)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
