@@ -115,21 +115,27 @@ local function GetDeviceInfo()
 	}
 end
 
--- Initialize premium features
-ShowPremiumWatermark()
+--// Initialize Responsive System
+local function InitializeResponsiveSystem()
+    -- Initialize premium features
+    ShowPremiumWatermark()
 
---// Viewport Change Detection
-workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-    local newViewportSize = workspace.CurrentCamera.ViewportSize
-    local newScaleFactor = math.min(newViewportSize.X / BaseResolution.X, newViewportSize.Y / BaseResolution.Y)
-    
-    -- Update scale factor for existing windows
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj.Name == "BaseUIScale" and obj:IsA("UIScale") then
-            obj.Scale = math.clamp(newScaleFactor, 0.8, 1.5)
+    -- Viewport Change Detection
+    workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+        local newViewportSize = workspace.CurrentCamera.ViewportSize
+        local newScaleFactor = math.min(newViewportSize.X / BaseResolution.X, newViewportSize.Y / BaseResolution.Y)
+        
+        -- Update scale factor for existing windows
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj.Name == "BaseUIScale" and obj:IsA("UIScale") then
+                obj.Scale = math.clamp(newScaleFactor, 0.8, 1.5)
+            end
         end
-    end
-end)
+    end)
+end
+
+-- Call initialization when first window is created
+local responsiveInitialized = false
 
 --// Touch & Mobile Specific Functions
 local function MobileTouchHandler(element, callback)
@@ -221,6 +227,12 @@ end
 
 --// Library Functions
 function MacLib:Window(Settings)
+	-- Initialize responsive system on first window creation
+	if not responsiveInitialized then
+		InitializeResponsiveSystem()
+		responsiveInitialized = true
+	end
+	
 	local WindowFunctions = {Settings = Settings}
 	if Settings.AcrylicBlur ~= nil then
 		acrylicBlur = Settings.AcrylicBlur
