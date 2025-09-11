@@ -1,17 +1,6 @@
 local MacLib = { 
 	Options = {}, 
-	Folder = "Maclib",
-	Version = "Pro v4.0",
-	Author = "Premium UI Solutions",
-	License = "Commercial License - For Resale",
-	Features = {
-		"🌟 Premium Responsive Design",
-		"📱 Mobile, Tablet & Desktop Support", 
-		"✨ Modern Animations & Effects",
-		"🎨 Professional Color Schemes",
-		"🔧 Advanced Scaling System",
-		"💎 Touch-Optimized Controls"
-	},
+	Folder = "Maclib", 
 	GetService = function(service)
 		return cloneref and cloneref(game:GetService(service)) or game:GetService(service)
 	end
@@ -29,154 +18,6 @@ local Players = MacLib.GetService("Players")
 --// Variables
 local isStudio = RunService:IsStudio()
 local LocalPlayer = Players.LocalPlayer
-
---// Device Detection & Responsive Variables
-local ViewportSize = workspace.CurrentCamera.ViewportSize
-local GuiService = MacLib.GetService("GuiService")
-
-local DeviceType = "Desktop"
-local IsMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
-local IsTablet = UserInputService.TouchEnabled and UserInputService.KeyboardEnabled
-local IsDesktop = UserInputService.KeyboardEnabled and UserInputService.MouseEnabled
-
-if IsMobile then
-    DeviceType = "Mobile"
-elseif IsTablet then
-    DeviceType = "Tablet" 
-else
-    DeviceType = "Desktop"
-end
-
--- Responsive Scaling Based on Device
-local BaseResolution = Vector2.new(1920, 1080)
-local CurrentResolution = ViewportSize
-local ScaleFactor = math.min(CurrentResolution.X / BaseResolution.X, CurrentResolution.Y / BaseResolution.Y)
-
--- Device-specific configurations
-local DeviceConfig = {
-    Mobile = {
-        WindowSize = UDim2.fromOffset(math.min(ViewportSize.X - 40, 400), math.min(ViewportSize.Y - 80, 600)),
-        SidebarWidth = 0.35,
-        TopbarHeight = 80,
-        FontSize = {
-            Title = 20,
-            Subtitle = 14,
-            Button = 16,
-            Label = 14
-        },
-        Padding = 20,
-        CornerRadius = 12
-    },
-    Tablet = {
-        WindowSize = UDim2.fromOffset(math.min(ViewportSize.X - 100, 700), math.min(ViewportSize.Y - 100, 650)),
-        SidebarWidth = 0.32,
-        TopbarHeight = 75,
-        FontSize = {
-            Title = 22,
-            Subtitle = 15,
-            Button = 17,
-            Label = 15
-        },
-        Padding = 18,
-        CornerRadius = 14
-    },
-    Desktop = {
-        WindowSize = UDim2.fromOffset(868, 650),
-        SidebarWidth = 0.28,
-        TopbarHeight = 70,
-        FontSize = {
-            Title = 24,
-            Subtitle = 16,
-            Button = 18,
-            Label = 16
-        },
-        Padding = 16,
-        CornerRadius = 16
-    }
-}
-
-local Config = DeviceConfig[DeviceType]
-
---// Premium Features & Licensing
-local function ShowPremiumWatermark()
-	print("🌟 MacLib Pro v4.0 - Premium UI Library")
-	print("📱 Responsive Design | Mobile & Desktop Ready")
-	print("💎 Commercial License Enabled")
-	print("🚀 Perfect for Commercial Projects & Resale")
-end
-
-local function GetDeviceInfo()
-	return {
-		Type = DeviceType,
-		Platform = (game:GetService("UserInputService").TouchEnabled and "Mobile") or "Desktop",
-		Resolution = ViewportSize,
-		ScaleFactor = ScaleFactor,
-		Features = MacLib.Features
-	}
-end
-
---// Initialize Responsive System
-local function InitializeResponsiveSystem()
-    -- Initialize premium features
-    ShowPremiumWatermark()
-
-    -- Viewport Change Detection
-    workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-        local newViewportSize = workspace.CurrentCamera.ViewportSize
-        local newScaleFactor = math.min(newViewportSize.X / BaseResolution.X, newViewportSize.Y / BaseResolution.Y)
-        
-        -- Update scale factor for existing windows
-        for _, obj in pairs(workspace:GetDescendants()) do
-            if obj.Name == "BaseUIScale" and obj:IsA("UIScale") then
-                obj.Scale = math.clamp(newScaleFactor, 0.8, 1.5)
-            end
-        end
-    end)
-end
-
--- Call initialization when first window is created
-local responsiveInitialized = false
-
---// Touch & Mobile Specific Functions
-local function MobileTouchHandler(element, callback)
-    if IsMobile then
-        element.TouchTap:Connect(callback)
-        -- Larger hit areas for mobile
-        element.Size = UDim2.new(element.Size.X.Scale, element.Size.X.Offset, element.Size.Y.Scale, math.max(element.Size.Y.Offset, 44))
-    else
-        element.MouseButton1Click:Connect(callback)
-    end
-end
-
-local function EnhanceForMobile(element)
-    if IsMobile then
-        -- Add ripple effect for touch feedback
-        local ripple = Instance.new("Frame")
-        ripple.Name = "TouchRipple"
-        ripple.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        ripple.BackgroundTransparency = 0.9
-        ripple.BorderSizePixel = 0
-        ripple.Size = UDim2.fromScale(0, 0)
-        ripple.Position = UDim2.fromScale(0.5, 0.5)
-        ripple.AnchorPoint = Vector2.new(0.5, 0.5)
-        ripple.ZIndex = element.ZIndex + 1
-        
-        local rippleCorner = Instance.new("UICorner")
-        rippleCorner.CornerRadius = UDim.new(1, 0)
-        rippleCorner.Parent = ripple
-        ripple.Parent = element
-        
-        element.TouchTap:Connect(function()
-            ripple.Size = UDim2.fromScale(0, 0)
-            ripple.BackgroundTransparency = 0.7
-            local rippleTween = TweenService:Create(ripple, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
-                Size = UDim2.fromScale(2, 2),
-                BackgroundTransparency = 1
-            })
-            rippleTween:Play()
-        end)
-    end
-end
 
 local windowState
 local acrylicBlur
@@ -227,12 +68,6 @@ end
 
 --// Library Functions
 function MacLib:Window(Settings)
-	-- Initialize responsive system on first window creation
-	if not responsiveInitialized then
-		InitializeResponsiveSystem()
-		responsiveInitialized = true
-	end
-	
 	local WindowFunctions = {Settings = Settings}
 	if Settings.AcrylicBlur ~= nil then
 		acrylicBlur = Settings.AcrylicBlur
@@ -262,16 +97,16 @@ function MacLib:Window(Settings)
 
 	local notificationsUIPadding = Instance.new("UIPadding")
 	notificationsUIPadding.Name = "NotificationsUIPadding"
-	notificationsUIPadding.PaddingBottom = UDim.new(0, 16)
-	notificationsUIPadding.PaddingLeft = UDim.new(0, 18)
-	notificationsUIPadding.PaddingRight = UDim.new(0, 18)
-	notificationsUIPadding.PaddingTop = UDim.new(0, 16)
+	notificationsUIPadding.PaddingBottom = UDim.new(0, 10)
+	notificationsUIPadding.PaddingLeft = UDim.new(0, 10)
+	notificationsUIPadding.PaddingRight = UDim.new(0, 10)
+	notificationsUIPadding.PaddingTop = UDim.new(0, 10)
 	notificationsUIPadding.Parent = notifications
 
 	local base = Instance.new("Frame")
 	base.Name = "Base"
 	base.AnchorPoint = Vector2.new(0.5, 0.5)
-	base.BackgroundColor3 = Color3.fromRGB(8, 10, 16)
+	base.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 	base.BackgroundTransparency = Settings.AcrylicBlur and 0.05 or 0
 	base.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	base.BorderSizePixel = 0
@@ -280,7 +115,6 @@ function MacLib:Window(Settings)
 
 	local baseUIScale = Instance.new("UIScale")
 	baseUIScale.Name = "BaseUIScale"
-	baseUIScale.Scale = 1
 	baseUIScale.Parent = base
 
 	local baseUICorner = Instance.new("UICorner")
@@ -291,47 +125,24 @@ function MacLib:Window(Settings)
 	local baseUIStroke = Instance.new("UIStroke")
 	baseUIStroke.Name = "BaseUIStroke"
 	baseUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	baseUIStroke.Color = Color3.fromRGB(100, 150, 255)
-	baseUIStroke.Transparency = 0.6
+	baseUIStroke.Color = Color3.fromRGB(255, 255, 255)
+	baseUIStroke.Transparency = 0.9
 	baseUIStroke.Parent = base
-	
-	-- Add glow effect
-	local glowFrame = Instance.new("Frame")
-	glowFrame.Name = "GlowFrame"
-	glowFrame.BackgroundTransparency = 1
-	glowFrame.Size = UDim2.new(1, 40, 1, 40)
-	glowFrame.Position = UDim2.fromOffset(-20, -20)
-	glowFrame.ZIndex = -1
-	glowFrame.Parent = base
-	
-	local glowUICorner = Instance.new("UICorner")
-	glowUICorner.CornerRadius = UDim.new(0, 25)
-	glowUICorner.Parent = glowFrame
-	
-	local glowUIStroke = Instance.new("UIStroke")
-	glowUIStroke.Color = Color3.fromRGB(100, 150, 255)
-	glowUIStroke.Thickness = 8
-	glowUIStroke.Transparency = 0.8
-	glowUIStroke.Parent = glowFrame
 
 	local sidebar = Instance.new("Frame")
 	sidebar.Name = "Sidebar"
-	sidebar.BackgroundColor3 = Color3.fromRGB(12, 15, 24)
-	sidebar.BackgroundTransparency = 0.2
+	sidebar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	sidebar.BackgroundTransparency = 1
 	sidebar.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	sidebar.BorderSizePixel = 0
-	sidebar.Position = UDim2.fromOffset(0, 0)
+	sidebar.Position = UDim2.fromScale(-3.52e-08, 4.69e-08)
 	sidebar.Size = UDim2.fromScale(0.325, 1)
-	
-	local sidebarUICorner = Instance.new("UICorner")
-	sidebarUICorner.CornerRadius = UDim.new(0, 16)
-	sidebarUICorner.Parent = sidebar
 
 	local divider = Instance.new("Frame")
 	divider.Name = "Divider"
 	divider.AnchorPoint = Vector2.new(1, 0)
-	divider.BackgroundColor3 = Color3.fromRGB(60, 80, 120)
-	divider.BackgroundTransparency = 0.3
+	divider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	divider.BackgroundTransparency = 0.9
 	divider.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	divider.BorderSizePixel = 0
 	divider.Position = UDim2.fromScale(1, 0)
@@ -528,10 +339,10 @@ function MacLib:Window(Settings)
 
 	local informationHolderUIPadding = Instance.new("UIPadding")
 	informationHolderUIPadding.Name = "InformationHolderUIPadding"
-	informationHolderUIPadding.PaddingBottom = UDim.new(0, 16)
+	informationHolderUIPadding.PaddingBottom = UDim.new(0, 10)
 	informationHolderUIPadding.PaddingLeft = UDim.new(0, 23)
 	informationHolderUIPadding.PaddingRight = UDim.new(0, 22)
-	informationHolderUIPadding.PaddingTop = UDim.new(0, 16)
+	informationHolderUIPadding.PaddingTop = UDim.new(0, 10)
 	informationHolderUIPadding.Parent = informationHolder
 
 	local globalSettingsButton = Instance.new("ImageButton")
@@ -549,14 +360,12 @@ function MacLib:Window(Settings)
 
 	local function ChangeGlobalSettingsButtonState(State)
 		if State == "Default" then
-			Tween(globalSettingsButton, TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				ImageTransparency = 0.5,
-				Size = UDim2.fromOffset(16, 16)
+			Tween(globalSettingsButton, TweenInfo.new(0.2, Enum.EasingStyle.Sine), {
+				ImageTransparency = 0.5
 			}):Play()
 		elseif State == "Hover" then
-			Tween(globalSettingsButton, TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-				ImageTransparency = 0.1,
-				Size = UDim2.fromOffset(18, 18)
+			Tween(globalSettingsButton, TweenInfo.new(0.2, Enum.EasingStyle.Sine), {
+				ImageTransparency = 0.3
 			}):Play()
 		end
 	end
@@ -586,7 +395,7 @@ function MacLib:Window(Settings)
 	title.Text = Settings.Title
 	title.TextColor3 = Color3.fromRGB(255, 255, 255)
 	title.RichText = true
-	title.TextSize = Config.FontSize.Title
+	title.TextSize = 18
 	title.TextTransparency = 0.1
 	title.TextTruncate = Enum.TextTruncate.SplitWord
 	title.TextXAlignment = Enum.TextXAlignment.Left
@@ -598,33 +407,6 @@ function MacLib:Window(Settings)
 	title.BorderSizePixel = 0
 	title.Size = UDim2.new(1, -20, 0, 0)
 	title.Parent = titleFrame
-	
-	-- Add title shadow
-	local titleShadow = title:Clone()
-	titleShadow.Name = "TitleShadow"
-	titleShadow.TextColor3 = Color3.fromRGB(0, 0, 0)
-	titleShadow.TextTransparency = 0.7
-	titleShadow.Position = UDim2.fromOffset(2, 2)
-	titleShadow.ZIndex = title.ZIndex - 1
-	titleShadow.Parent = titleFrame
-	
-	-- Premium Version Badge
-	local premiumBadge = Instance.new("TextLabel")
-	premiumBadge.Name = "PremiumBadge"
-	premiumBadge.FontFace = Font.new(assets.interFont, Enum.FontWeight.Bold)
-	premiumBadge.Text = "PRO"
-	premiumBadge.TextColor3 = Color3.fromRGB(255, 215, 0)
-	premiumBadge.TextSize = 10
-	premiumBadge.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
-	premiumBadge.BackgroundTransparency = 0.85
-	premiumBadge.BorderSizePixel = 0
-	premiumBadge.Size = UDim2.fromOffset(32, 16)
-	premiumBadge.Position = UDim2.new(1, -40, 0, 2)
-	premiumBadge.Parent = titleFrame
-	
-	local premiumBadgeCorner = Instance.new("UICorner")
-	premiumBadgeCorner.CornerRadius = UDim.new(0, 8)
-	premiumBadgeCorner.Parent = premiumBadge
 
 	local subtitle = Instance.new("TextLabel")
 	subtitle.Name = "Subtitle"
@@ -804,23 +586,23 @@ function MacLib:Window(Settings)
 
 	local userInfoUIPadding = Instance.new("UIPadding")
 	userInfoUIPadding.Name = "UserInfoUIPadding"
-	userInfoUIPadding.PaddingLeft = UDim.new(0, 18)
-	userInfoUIPadding.PaddingRight = UDim.new(0, 18)
+	userInfoUIPadding.PaddingLeft = UDim.new(0, 10)
+	userInfoUIPadding.PaddingRight = UDim.new(0, 10)
 	userInfoUIPadding.Parent = userInfo
 
 	userInfo.Parent = sidebarGroup
 
 	local sidebarGroupUIPadding = Instance.new("UIPadding")
 	sidebarGroupUIPadding.Name = "SidebarGroupUIPadding"
-	sidebarGroupUIPadding.PaddingLeft = UDim.new(0, 18)
-	sidebarGroupUIPadding.PaddingRight = UDim.new(0, 18)
+	sidebarGroupUIPadding.PaddingLeft = UDim.new(0, 10)
+	sidebarGroupUIPadding.PaddingRight = UDim.new(0, 10)
 	sidebarGroupUIPadding.PaddingTop = UDim.new(0, 31)
 	sidebarGroupUIPadding.Parent = sidebarGroup
 
 	local tabSwitchers = Instance.new("Frame")
 	tabSwitchers.Name = "TabSwitchers"
-	tabSwitchers.BackgroundColor3 = Color3.fromRGB(18, 22, 32)
-	tabSwitchers.BackgroundTransparency = 0.3
+	tabSwitchers.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	tabSwitchers.BackgroundTransparency = 1
 	tabSwitchers.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	tabSwitchers.BorderSizePixel = 0
 	tabSwitchers.Size = UDim2.new(1, 0, 1, -107)
@@ -860,13 +642,13 @@ function MacLib:Window(Settings)
 
 	local content = Instance.new("Frame")
 	content.Name = "Content"
-	content.AnchorPoint = Vector2.new(0, 0)
+	content.AnchorPoint = Vector2.new(1, 0)
 	content.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	content.BackgroundTransparency = 1
 	content.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	content.BorderSizePixel = 0
-	content.Position = UDim2.fromScale(0.325, 0)
-	content.Size = UDim2.fromScale(0.675, 1)
+	content.Position = UDim2.fromScale(1, 4.69e-08)
+	content.Size = UDim2.new(0, (base.AbsoluteSize.X - sidebar.AbsoluteSize.X), 1, 0)
 
 	local resizingContent = false
 	local defaultSidebarWidth = sidebar.AbsoluteSize.X
@@ -925,22 +707,17 @@ function MacLib:Window(Settings)
 
 	local topbar = Instance.new("Frame")
 	topbar.Name = "Topbar"
-	topbar.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
-	topbar.BackgroundTransparency = 0.2
+	topbar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	topbar.BackgroundTransparency = 1
 	topbar.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	topbar.BorderSizePixel = 0
-	topbar.Position = UDim2.fromScale(0, 0)
 	topbar.Size = UDim2.new(1, 0, 0, 63)
-	
-	local topbarUICorner = Instance.new("UICorner")
-	topbarUICorner.CornerRadius = UDim.new(0, 14)
-	topbarUICorner.Parent = topbar
 
 	local divider4 = Instance.new("Frame")
 	divider4.Name = "Divider"
 	divider4.AnchorPoint = Vector2.new(0, 1)
-	divider4.BackgroundColor3 = Color3.fromRGB(80, 120, 180)
-	divider4.BackgroundTransparency = 0.4
+	divider4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	divider4.BackgroundTransparency = 0.9
 	divider4.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	divider4.BorderSizePixel = 0
 	divider4.Position = UDim2.fromScale(0, 1)
@@ -970,7 +747,7 @@ function MacLib:Window(Settings)
 	moveIcon.BackgroundTransparency = 1
 	moveIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	moveIcon.BorderSizePixel = 0
-	moveIcon.Position = UDim2.fromScale(0.95, 0.5)
+	moveIcon.Position = UDim2.fromScale(1, 0.5)
 	moveIcon.Size = UDim2.fromOffset(15, 15)
 	moveIcon.Parent = elements
 	moveIcon.Visible = not Settings.DragStyle or Settings.DragStyle == 1
@@ -1100,7 +877,7 @@ function MacLib:Window(Settings)
 	currentTab.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	currentTab.BorderSizePixel = 0
 	currentTab.Position = UDim2.fromScale(0, 0.5)
-	currentTab.Size = UDim2.fromScale(0.8, 0)
+	currentTab.Size = UDim2.fromScale(0.9, 0)
 	currentTab.Parent = elements
 
 	elements.Parent = topbar
@@ -1131,8 +908,8 @@ function MacLib:Window(Settings)
 
 	local globalSettingsUIPadding = Instance.new("UIPadding")
 	globalSettingsUIPadding.Name = "GlobalSettingsUIPadding"
-	globalSettingsUIPadding.PaddingBottom = UDim.new(0, 16)
-	globalSettingsUIPadding.PaddingTop = UDim.new(0, 16)
+	globalSettingsUIPadding.PaddingBottom = UDim.new(0, 10)
+	globalSettingsUIPadding.PaddingTop = UDim.new(0, 10)
 	globalSettingsUIPadding.Parent = globalSettings
 
 	local globalSettingsUIListLayout = Instance.new("UIListLayout")
@@ -1623,7 +1400,7 @@ function MacLib:Window(Settings)
 			tabSwitcher.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			tabSwitcher.BorderSizePixel = 0
 			tabSwitcher.Position = UDim2.fromScale(0.5, 0)
-			tabSwitcher.Size = UDim2.new(0, 200, 0, 40)
+			tabSwitcher.Size = UDim2.new(1, -21, 0, 40)
 
 			tabIndex += 1
 			tabSwitcher.LayoutOrder = tabIndex
@@ -1708,8 +1485,8 @@ function MacLib:Window(Settings)
 			local elementsUIPadding = Instance.new("UIPadding")
 			elementsUIPadding.Name = "ElementsUIPadding"
 			elementsUIPadding.PaddingRight = UDim.new(0, 5)
-			elementsUIPadding.PaddingTop = UDim.new(0, 16)
-			elementsUIPadding.PaddingBottom = UDim.new(0, 16)
+			elementsUIPadding.PaddingTop = UDim.new(0, 10)
+			elementsUIPadding.PaddingBottom = UDim.new(0, 10)
 			elementsUIPadding.Parent = elements1
 
 			local elementsScrolling = Instance.new("ScrollingFrame")
@@ -2761,7 +2538,7 @@ function MacLib:Window(Settings)
 					local dropdownFrameUIPadding = Instance.new("UIPadding")
 					dropdownFrameUIPadding.Name = "DropdownFrameUIPadding"
 					dropdownFrameUIPadding.PaddingTop = UDim.new(0, 38)
-					dropdownFrameUIPadding.PaddingBottom = UDim.new(0, 16)
+					dropdownFrameUIPadding.PaddingBottom = UDim.new(0, 10)
 					dropdownFrameUIPadding.Parent = dropdownFrame
 
 					local dropdownFrameUIListLayout = Instance.new("UIListLayout")
@@ -2814,7 +2591,7 @@ function MacLib:Window(Settings)
 					searchBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
 					searchBox.PlaceholderText = "Search..."
 					searchBox.Text = ""
-					searchBox.TextColor3 = Color3.fromRGB(220, 235, 255)
+					searchBox.TextColor3 = Color3.fromRGB(200, 200, 200)
 					searchBox.TextSize = 14
 					searchBox.TextXAlignment = Enum.TextXAlignment.Left
 					searchBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -3590,7 +3367,7 @@ function MacLib:Window(Settings)
 					local inputBoxUIPadding = Instance.new("UIPadding")
 					inputBoxUIPadding.Name = "InputBoxUIPadding"
 					inputBoxUIPadding.PaddingLeft = UDim.new(0, 8)
-					inputBoxUIPadding.PaddingRight = UDim.new(0, 18)
+					inputBoxUIPadding.PaddingRight = UDim.new(0, 10)
 					inputBoxUIPadding.Parent = inputBox
 
 					inputBox.Parent = red
@@ -3673,7 +3450,7 @@ function MacLib:Window(Settings)
 					local inputBoxUIPadding1 = Instance.new("UIPadding")
 					inputBoxUIPadding1.Name = "InputBoxUIPadding"
 					inputBoxUIPadding1.PaddingLeft = UDim.new(0, 8)
-					inputBoxUIPadding1.PaddingRight = UDim.new(0, 18)
+					inputBoxUIPadding1.PaddingRight = UDim.new(0, 10)
 					inputBoxUIPadding1.Parent = inputBox1
 
 					inputBox1.Parent = green
@@ -3756,7 +3533,7 @@ function MacLib:Window(Settings)
 					local inputBoxUIPadding2 = Instance.new("UIPadding")
 					inputBoxUIPadding2.Name = "InputBoxUIPadding"
 					inputBoxUIPadding2.PaddingLeft = UDim.new(0, 8)
-					inputBoxUIPadding2.PaddingRight = UDim.new(0, 18)
+					inputBoxUIPadding2.PaddingRight = UDim.new(0, 10)
 					inputBoxUIPadding2.Parent = inputBox2
 
 					inputBox2.Parent = blue
@@ -3840,7 +3617,7 @@ function MacLib:Window(Settings)
 					local inputBoxUIPadding3 = Instance.new("UIPadding")
 					inputBoxUIPadding3.Name = "InputBoxUIPadding"
 					inputBoxUIPadding3.PaddingLeft = UDim.new(0, 8)
-					inputBoxUIPadding3.PaddingRight = UDim.new(0, 18)
+					inputBoxUIPadding3.PaddingRight = UDim.new(0, 10)
 					inputBoxUIPadding3.Parent = inputBox3
 
 					inputBox3.Parent = alpha
@@ -3923,7 +3700,7 @@ function MacLib:Window(Settings)
 					local inputBoxUIPadding4 = Instance.new("UIPadding")
 					inputBoxUIPadding4.Name = "InputBoxUIPadding"
 					inputBoxUIPadding4.PaddingLeft = UDim.new(0, 8)
-					inputBoxUIPadding4.PaddingRight = UDim.new(0, 18)
+					inputBoxUIPadding4.PaddingRight = UDim.new(0, 10)
 					inputBoxUIPadding4.Parent = inputBox4
 
 					inputBox4.Parent = hex
@@ -4053,7 +3830,7 @@ function MacLib:Window(Settings)
 					confirm.TextTruncate = Enum.TextTruncate.AtEnd
 					confirm.AutoButtonColor = false
 					confirm.AutomaticSize = Enum.AutomaticSize.Y
-					confirm.BackgroundColor3 = Color3.fromRGB(35, 45, 65)
+					confirm.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 					confirm.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					confirm.BorderSizePixel = 0
 					confirm.Size = UDim2.fromScale(1, 0)
@@ -4061,8 +3838,8 @@ function MacLib:Window(Settings)
 					local uIPadding1 = Instance.new("UIPadding")
 					uIPadding1.Name = "UIPadding"
 					uIPadding1.PaddingBottom = UDim.new(0, 9)
-					uIPadding1.PaddingLeft = UDim.new(0, 18)
-					uIPadding1.PaddingRight = UDim.new(0, 18)
+					uIPadding1.PaddingLeft = UDim.new(0, 10)
+					uIPadding1.PaddingRight = UDim.new(0, 10)
 					uIPadding1.PaddingTop = UDim.new(0, 9)
 					uIPadding1.Parent = confirm
 
@@ -4087,7 +3864,7 @@ function MacLib:Window(Settings)
 					cancel.TextTruncate = Enum.TextTruncate.AtEnd
 					cancel.AutoButtonColor = false
 					cancel.AutomaticSize = Enum.AutomaticSize.Y
-					cancel.BackgroundColor3 = Color3.fromRGB(35, 45, 65)
+					cancel.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 					cancel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					cancel.BorderSizePixel = 0
 					cancel.Size = UDim2.fromScale(1, 0)
@@ -4100,8 +3877,8 @@ function MacLib:Window(Settings)
 					local uIPadding2 = Instance.new("UIPadding")
 					uIPadding2.Name = "UIPadding"
 					uIPadding2.PaddingBottom = UDim.new(0, 9)
-					uIPadding2.PaddingLeft = UDim.new(0, 18)
-					uIPadding2.PaddingRight = UDim.new(0, 18)
+					uIPadding2.PaddingLeft = UDim.new(0, 10)
+					uIPadding2.PaddingRight = UDim.new(0, 10)
 					uIPadding2.PaddingTop = UDim.new(0, 9)
 					uIPadding2.Parent = cancel
 
@@ -4109,7 +3886,7 @@ function MacLib:Window(Settings)
 
 					local uIPadding3 = Instance.new("UIPadding")
 					uIPadding3.Name = "UIPadding"
-					uIPadding3.PaddingTop = UDim.new(0, 16)
+					uIPadding3.PaddingTop = UDim.new(0, 10)
 					uIPadding3.Parent = interactions
 
 					interactions.Parent = prompt
@@ -5101,9 +4878,9 @@ function MacLib:Window(Settings)
 		local notificationUIPadding = Instance.new("UIPadding")
 		notificationUIPadding.Name = "NotificationUIPadding"
 		notificationUIPadding.PaddingBottom = UDim.new(0, 12)
-		notificationUIPadding.PaddingLeft = UDim.new(0, 18)
-		notificationUIPadding.PaddingRight = UDim.new(0, 18)
-		notificationUIPadding.PaddingTop = UDim.new(0, 16)
+		notificationUIPadding.PaddingLeft = UDim.new(0, 10)
+		notificationUIPadding.PaddingRight = UDim.new(0, 10)
+		notificationUIPadding.PaddingTop = UDim.new(0, 10)
 		notificationUIPadding.Parent = notificationInformation
 
 		notificationInformation.Parent = notification
@@ -5392,7 +5169,7 @@ function MacLib:Window(Settings)
 			button.TextTruncate = Enum.TextTruncate.AtEnd
 			button.AutoButtonColor = false
 			button.AutomaticSize = Enum.AutomaticSize.Y
-			button.BackgroundColor3 = Color3.fromRGB(35, 45, 65)
+			button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 			button.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			button.BorderSizePixel = 0
 			button.Size = UDim2.fromScale(1, 0)
@@ -5400,8 +5177,8 @@ function MacLib:Window(Settings)
 			local uIPadding1 = Instance.new("UIPadding")
 			uIPadding1.Name = "UIPadding"
 			uIPadding1.PaddingBottom = UDim.new(0, 9)
-			uIPadding1.PaddingLeft = UDim.new(0, 18)
-			uIPadding1.PaddingRight = UDim.new(0, 18)
+			uIPadding1.PaddingLeft = UDim.new(0, 10)
+			uIPadding1.PaddingRight = UDim.new(0, 10)
 			uIPadding1.PaddingTop = UDim.new(0, 9)
 			uIPadding1.Parent = button
 
@@ -5841,7 +5618,7 @@ function MacLib:Demo()
 	local Window = MacLib:Window({
 		Title = "Maclib Demo",
 		Subtitle = "This is a subtitle.",
-		Size = Config.WindowSize,
+		Size = UDim2.fromOffset(868, 650),
 		DragStyle = 1,
 		DisabledWindowControls = {},
 		ShowUserInfo = true,
@@ -6101,4 +5878,3 @@ function MacLib:Demo()
 end
 
 return MacLib
-
