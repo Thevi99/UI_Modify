@@ -860,13 +860,13 @@ function MacLib:Window(Settings)
 
 	local content = Instance.new("Frame")
 	content.Name = "Content"
-	content.AnchorPoint = Vector2.new(0, 0)
+	content.AnchorPoint = Vector2.new(1, 0)
 	content.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	content.BackgroundTransparency = 1
 	content.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	content.BorderSizePixel = 0
-	content.Position = UDim2.fromScale(0.325, 0)
-	content.Size = UDim2.fromScale(0.675, 1)
+	content.Position = UDim2.fromScale(1, 0)
+	content.Size = UDim2.new(0, (base.AbsoluteSize.X - sidebar.AbsoluteSize.X), 1, 0)
 
 	local resizingContent = false
 	local defaultSidebarWidth = sidebar.AbsoluteSize.X
