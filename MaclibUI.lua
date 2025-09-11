@@ -1617,12 +1617,12 @@ function MacLib:Window(Settings)
 			tabSwitcher.TextColor3 = Color3.fromRGB(0, 0, 0)
 			tabSwitcher.TextSize = 14
 			tabSwitcher.AutoButtonColor = false
-			tabSwitcher.AnchorPoint = Vector2.new(0.5, 0)
+			tabSwitcher.AnchorPoint = Vector2.new(0, 0)
 			tabSwitcher.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			tabSwitcher.BackgroundTransparency = 1
 			tabSwitcher.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			tabSwitcher.BorderSizePixel = 0
-			tabSwitcher.Position = UDim2.fromScale(0.5, 0)
+			tabSwitcher.Position = UDim2.fromScale(0, 0)
 			tabSwitcher.Size = UDim2.new(1, -21, 0, 40)
 
 			tabIndex += 1
@@ -6101,3 +6101,4 @@ function MacLib:Demo()
 end
 
 return MacLib
+
